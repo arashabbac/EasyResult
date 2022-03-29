@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using ResultHandler.Utility;
 using ResultHandler.Exceptions;
+using ResultHandler.Services;
+using Microsoft.AspNetCore.Builder;
 
 namespace ResultHandler;
 
@@ -10,12 +12,14 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly IExceptionService _exceptionService;
 
     public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger,
-        RequestDelegate next)
+        RequestDelegate next, IExceptionService exceptionService)
     {
         _logger = logger;
         _next = next;
+        _exceptionService = exceptionService;
     }
 
     public async Task Invoke(HttpContext context)
@@ -26,7 +30,7 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            context.Response.StatusCode = (int)GetHttpStatusCodeByExceptionType(ex);
+            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByExceptionType(ex);
             await context.Response.WriteAsJsonAsync(ex.ToResult());
 
             _logger.LogError("::::::::::::::::::: Exception :::::::::::::::::::");
@@ -34,16 +38,5 @@ public class ExceptionMiddleware
             _logger.LogError($"Inner Exception ::::::::::::::::::: {ex.GetException()} :::::::::::::::::::");
         }
     }
-
-    private static HttpStatusCode GetHttpStatusCodeByExceptionType(Exception exception)
-    {
-        return exception switch
-        {
-            NotFoundException => HttpStatusCode.NotFound,
-            BadRequestException => HttpStatusCode.BadRequest,
-            UnauthorizedAccessException => HttpStatusCode.Unauthorized,
-            ApplicationException => HttpStatusCode.NotImplemented,
-            _ => HttpStatusCode.InternalServerError,
-        };
-    }
 }
+

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ResultHandler;
 
-public class ActionResultFilterAttribute: ActionFilterAttribute
+public class ActionResultFilterAttribute : ActionFilterAttribute
 {
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
@@ -16,16 +16,6 @@ public class ActionResultFilterAttribute: ActionFilterAttribute
         {
             context.Result = new OkObjectResult(new Result().WithSuccess());
         }
-        //if(context.Result is ObjectResult { StatusCode:404 })
-        //{
-        //    var result = new Result.Result {
-        //        IsFailed = true
-        //    };
-        //    var ss = new ObjectResult(result) {
-        //        StatusCode = 404
-        //    };
-        //    context.Result = ss;    
-        //}
         await base.OnResultExecutionAsync(context, next);
     }
 }
