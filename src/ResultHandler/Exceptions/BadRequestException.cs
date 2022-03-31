@@ -1,6 +1,8 @@
-﻿namespace ResultHandler.Exceptions;
+﻿using ResultHandler.Configurations;
 
-public class BadRequestException : Exception
+namespace ResultHandler.Exceptions;
+
+public class BadRequestException : Exception , IExceptionResult<BadRequestException>
 {
     public BadRequestException()
     { }
@@ -12,4 +14,9 @@ public class BadRequestException : Exception
     public BadRequestException(string message, Exception innerException)
         : base(message, innerException)
     { }
+
+    public void Configure(ExceptionResultBuilder<BadRequestException> builder)
+    {
+        builder.WithHttpStatusCode(System.Net.HttpStatusCode.BadRequest);
+    }
 }

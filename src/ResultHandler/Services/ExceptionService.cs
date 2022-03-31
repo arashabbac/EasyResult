@@ -3,42 +3,37 @@ using System.Net;
 
 namespace ResultHandler.Services;
 
-public class ExceptionService : IExceptionService
+public class ExceptionService
 {
-    private readonly List<ExceptionDto> _exceptions;
-    public IReadOnlyList<ExceptionDto> Exceptions => _exceptions;
+    private readonly Dictionary<Type, HttpStatusCode> _exceptions;
+    public IReadOnlyDictionary<Type,HttpStatusCode> Exceptions => _exceptions;
     public ExceptionService()
     {
         _exceptions = new();
-        _exceptions.AddRange(new[] 
-        { 
-            new ExceptionDto(typeof(UnauthorizedAccessException),HttpStatusCode.Unauthorized),
-            new ExceptionDto(typeof(NotFoundException),HttpStatusCode.NotFound),
-            new ExceptionDto(typeof(BadRequestException),HttpStatusCode.BadRequest)
-        });
-    }
-    public void AddException(ExceptionDto exception)
-    {
-        if(exception is null)
-            throw new ArgumentNullException(nameof(exception));
-
-        if (exception.ExceptionType.IsSubclassOf(typeof(Exception)) == false)
-            throw new ArgumentException("Only exception type is allowed!");
-
-        if (_exceptions.Any(c => c.ExceptionType == exception.ExceptionType))
-            throw new DuplicateWaitObjectException("This exception type has already defined!");
-
-        _exceptions.Add(exception);
     }
 
     public HttpStatusCode GetHttpStatusCodeByExceptionType(Exception exception)
     {
-        var ex = _exceptions.FirstOrDefault(x => x.ExceptionType == exception.GetType());
+        var ex = _exceptions.FirstOrDefault(x => x.Key == exception.GetType());
 
-        if (ex is not null) return ex.StatusCode;
+        if (ex.Key is not null) return ex.Value;
 
         return HttpStatusCode.InternalServerError;
     }
 
-    public List<ExceptionDto> GetExceptions() => _exceptions;
+    public IReadOnlyDictionary<Type, HttpStatusCode> GetExceptions() => Exceptions;
+
+    public void Add(Type exceptionType, HttpStatusCode statusCode)
+    {
+        if (exceptionType is null)
+            throw new ArgumentNullException(nameof(exceptionType));
+
+        if (exceptionType.IsSubclassOf(typeof(Exception)) == false)
+            throw new ArgumentException("Only exception type is allowed!");
+
+        if (_exceptions.Any(c => c.Key == exceptionType))
+            throw new DuplicateWaitObjectException("This exception type has already defined!");
+
+        _exceptions.TryAdd(exceptionType, statusCode);
+    }
 }

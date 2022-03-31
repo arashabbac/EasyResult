@@ -12,10 +12,10 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
-    private readonly IExceptionService _exceptionService;
+    private readonly ExceptionService _exceptionService;
 
     public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger,
-        RequestDelegate next, IExceptionService exceptionService)
+        RequestDelegate next, ExceptionService exceptionService)
     {
         _logger = logger;
         _next = next;
