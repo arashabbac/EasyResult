@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using ResultHandler.Utility;
-using ResultHandler.Exceptions;
 using ResultHandler.Services;
-using Microsoft.AspNetCore.Builder;
 
 namespace ResultHandler;
 

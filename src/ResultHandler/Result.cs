@@ -29,6 +29,13 @@ public class Result
         return this;
     }
 
+    public Result WithError()
+    {
+        IsSuccess = false;
+        Successes.Clear();
+        return this;
+    }
+
     public Result WithSuccess(string message = "Operation has been done successfully!")
     {
         IsSuccess = true;

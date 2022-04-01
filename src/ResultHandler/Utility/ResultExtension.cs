@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-namespace ResultHandler.Utility;
+﻿namespace ResultHandler.Utility;
 
 public static class ResultExtension
 {
@@ -20,24 +19,8 @@ public static class ResultExtension
     {
         var result = new Result();
 
-        if (ex is ValidationException)
-        {
-            foreach (var error in ((ValidationException)ex).Errors)
-                result.WithError(error.ErrorMessage);
-        }
-
         result.WithError(ex.Message);
         result.WithError(ex.GetException());
         return result;
     }
-
-    //public static Result ToResult(this ValidationException ex)
-    //{
-    //    var result = new Result();
-
-    //    foreach (var error in ex.Errors)
-    //        result.WithError(error.ErrorMessage);
-
-    //    return result;
-    //}
 }
