@@ -1,4 +1,5 @@
-﻿using EasyResultTests.Unit.Doubles.FakeObjects;
+﻿using EasyResult.Exceptions;
+using EasyResultTests.Unit.Doubles.FakeObjects;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -55,5 +56,24 @@ public class FakeController : ControllerBase
         person.IsActive = person.IsActive != true;
 
         return Ok();
+    }
+
+    [HttpGet("{exceptionId?}")]
+    public IActionResult RaiseException(int? exceptionId)
+    {
+        if (exceptionId is null)
+            throw new BadRequestException("This is bad request exception!");
+
+        else if (exceptionId == 1)
+            throw new NotFoundException("This is not found exception!");
+
+        else if (exceptionId == 2)
+            throw new TaskCanceledException("This is task cancelled exception!(built-in exception that we do not register it!)");
+
+        else if (exceptionId == 3)
+            throw new KeyNotFoundException("This is key not found exception!(built-in exception that we register it!)");
+
+        else
+            throw new System.Exception("This is unhandled exception!");
     }
 }
