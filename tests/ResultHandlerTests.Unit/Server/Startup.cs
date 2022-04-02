@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using EasyResult.Runtime;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ResultHandler.Runtimes;
 
-namespace ResultHandlerTests.Unit.Server;
+namespace EasyResultTests.Unit.Server;
 
 public class Startup
 {
@@ -17,7 +17,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers().AddResultHandler();
+        services.AddControllers().AddEasyResult();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

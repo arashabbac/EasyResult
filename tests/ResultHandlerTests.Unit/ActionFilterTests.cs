@@ -1,14 +1,15 @@
-﻿using FluentAssertions;
+﻿using EasyResult;
+using EasyResultTests.Unit.Doubles.FakeObjects;
+using EasyResultTests.Unit.Server;
+using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
-using ResultHandlerTests.Unit.Doubles.FakeObjects;
-using ResultHandlerTests.Unit.Server;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ResultHandlerTests.Unit;
+namespace EasyResultTests.Unit;
 
 public class ActionFilterTests : TestFixture
 {
@@ -18,7 +19,7 @@ public class ActionFilterTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/Get");
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -30,9 +31,9 @@ public class ActionFilterTests : TestFixture
     [Fact]
     public async Task BadRequest_Method_Test_Without_Object()
     {
-        var response = await Server.Host.GetTestClient().PatchAsync("Fake/ChangeActivity",null);
+        var response = await Server.Host.GetTestClient().PatchAsync("Fake/ChangeActivity", null);
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -45,7 +46,7 @@ public class ActionFilterTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/Get/3");
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -59,7 +60,7 @@ public class ActionFilterTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().PatchAsync("Fake/ChangeActivity/3", null);
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -70,9 +71,9 @@ public class ActionFilterTests : TestFixture
     [Fact]
     public async Task ModelState_Failed_Test()
     {
-        var response = await Server.Host.GetTestClient().PostAsJsonAsync("Fake/Post",new {});
+        var response = await Server.Host.GetTestClient().PostAsJsonAsync("Fake/Post", new { });
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Successes.Should().BeEmpty();
@@ -82,10 +83,10 @@ public class ActionFilterTests : TestFixture
 
     [Fact]
     public async Task Ok_Method_With_Object()
-     {
+    {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/Get/1");
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result<Person>>();
+        var result = await response.Content.ReadFromJsonAsync<Result<Person>>();
 
         result!.Errors.Should().BeEmpty();
         result.IsSuccess.Should().BeTrue();
@@ -103,9 +104,9 @@ public class ActionFilterTests : TestFixture
     [Fact]
     public async Task Ok_Method_Without_Object()
     {
-        var response = await Server.Host.GetTestClient().PatchAsync("Fake/ChangeActivity/2",null);
+        var response = await Server.Host.GetTestClient().PatchAsync("Fake/ChangeActivity/2", null);
 
-        var result = await response.Content.ReadFromJsonAsync<ResultHandler.Result>();
+        var result = await response.Content.ReadFromJsonAsync<Result>();
 
         result!.Errors.Should().BeEmpty();
         result.IsSuccess.Should().BeTrue();

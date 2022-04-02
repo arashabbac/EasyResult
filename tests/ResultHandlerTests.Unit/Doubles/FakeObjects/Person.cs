@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ResultHandlerTests.Unit.Doubles.FakeObjects;
+namespace EasyResultTests.Unit.Doubles.FakeObjects;
 
 public class Person
 {

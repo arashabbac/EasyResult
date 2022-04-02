@@ -1,8 +1,8 @@
-﻿using ResultHandler.Configurations;
+﻿using EasyResult.Configurations;
 
-namespace ResultHandler.Exceptions;
+namespace EasyResult.Exceptions;
 
-public class BadRequestException : Exception , IExceptionResult<BadRequestException>
+public class BadRequestException : Exception, IExceptionResult<BadRequestException>
 {
     public BadRequestException()
     { }

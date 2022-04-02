@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace ResultHandlerTests.Unit.Server;
+namespace EasyResultTests.Unit.Server;
 public class TestFixture
 {
     public TestServer Server;

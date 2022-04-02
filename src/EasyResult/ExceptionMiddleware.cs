@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using ResultHandler.Utility;
-using ResultHandler.Services;
+using EasyResult.Utility;
+using EasyResult.Services;
 
-namespace ResultHandler;
+namespace EasyResult;
 
 public class ExceptionMiddleware
 {

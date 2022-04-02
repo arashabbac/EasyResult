@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ResultHandler.Exceptions;
-using ResultHandlerTests.Unit.Doubles.FakeObjects;
+﻿using EasyResultTests.Unit.Doubles.FakeObjects;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ResultHandlerTests.Unit.Doubles;
+namespace EasyResultTests.Unit.Doubles;
 
 [ApiController]
 [Route("[controller]/[action]")]
@@ -29,7 +28,7 @@ public class FakeController : ControllerBase
 
         var person = _people.Find(x => x.Id == id);
 
-        if(person is null)
+        if (person is null)
             return NotFound("Person is not found!");
 
         return Ok(person);

@@ -1,22 +1,21 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using EasyResult.Configurations;
+using EasyResult.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using ResultHandler.Configurations;
-using ResultHandler.Exceptions;
-using ResultHandler.Services;
 using System.Reflection;
 
-namespace ResultHandler.Runtimes;
+namespace EasyResult.Runtime;
 
-public static class ResultHandlerExtensions
+public static class EasyResultExtensions
 {
-    public static IMvcBuilder AddResultHandler(this IMvcBuilder mvcBuilder)
+    public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder)
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
     }
 
-    public static IMvcCoreBuilder AddResultHandler(this IMvcCoreBuilder mvcBuilder)
+    public static IMvcCoreBuilder AddEasyResult(this IMvcCoreBuilder mvcBuilder)
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
@@ -55,7 +54,7 @@ public static class ResultHandlerExtensions
             using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
             var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
 
-            var builderObj = Activator.CreateInstance(genericBuilder,new object[] {exceptionService});
+            var builderObj = Activator.CreateInstance(genericBuilder, new object[] { exceptionService });
             var exceptionObj = Activator.CreateInstance(ex);
 
             method!.Invoke(exceptionObj, new object[] { builderObj! });

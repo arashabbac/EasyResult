@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
-using ResultHandler;
+﻿using EasyResult;
+using FluentAssertions;
 using Xunit;
 
-namespace ResultHandlerTests.Unit;
+namespace EasyResultTests.Unit;
 
 public class ResultTests
 {
@@ -138,7 +138,7 @@ public class ResultTests
 
         result.Successes.Should().HaveCount(1);
         result.IsSuccess.Should().BeTrue();
-        result.Errors.Should().BeEmpty();    
+        result.Errors.Should().BeEmpty();
         result.Data.Should().BeEquivalentTo(data);
     }
 
@@ -150,7 +150,7 @@ public class ResultTests
         var data = new { FirstName = "Arash", LastName = "Abbac" };
 
         var message = "Operation successfull";
-        result.WithData(data,message);
+        result.WithData(data, message);
 
         result.Successes.Should().HaveCount(1);
         result.Successes.Should().Contain(message);

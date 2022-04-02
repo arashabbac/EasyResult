@@ -1,4 +1,4 @@
-﻿namespace ResultHandler.Utility;
+﻿namespace EasyResult.Utility;
 
 public static class Extensions
 {
@@ -14,25 +14,25 @@ public static class Extensions
         return ExceptionMessage;
     }
 
-	public static string? Fix(this string text)
-	{
-		if (text is null)
-		{
-			return null;
-		}
+    public static string? Fix(this string text)
+    {
+        if (text is null)
+        {
+            return null;
+        }
 
-		text = text.Trim();
+        text = text.Trim();
 
-		if (text == string.Empty)
-		{
-			return null;
-		}
+        if (text == string.Empty)
+        {
+            return null;
+        }
 
-		while (text.Contains("  "))
-		{
-			text = text.Replace("  ", " ");
-		}
+        while (text.Contains("  "))
+        {
+            text = text.Replace("  ", " ");
+        }
 
-		return text;
-	}
+        return text;
+    }
 }

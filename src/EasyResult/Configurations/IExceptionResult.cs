@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ResultHandler.Configurations;
+namespace EasyResult.Configurations;
 
 public interface IExceptionResult<T> where T : Exception
 {

@@ -1,8 +1,8 @@
-﻿using ResultHandler.Configurations;
+﻿using EasyResult.Configurations;
 
-namespace ResultHandler.Exceptions;
+namespace EasyResult.Exceptions;
 
-public class NotFoundException : Exception , IExceptionResult<NotFoundException>
+public class NotFoundException : Exception, IExceptionResult<NotFoundException>
 {
     public NotFoundException()
     { }

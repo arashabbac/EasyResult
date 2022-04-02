@@ -1,12 +1,11 @@
-﻿using ResultHandler.Exceptions;
-using System.Net;
+﻿using System.Net;
 
-namespace ResultHandler.Services;
+namespace EasyResult.Services;
 
 public class ExceptionService
 {
     private readonly Dictionary<Type, HttpStatusCode> _exceptions;
-    public IReadOnlyDictionary<Type,HttpStatusCode> Exceptions => _exceptions;
+    public IReadOnlyDictionary<Type, HttpStatusCode> Exceptions => _exceptions;
     public ExceptionService()
     {
         _exceptions = new();

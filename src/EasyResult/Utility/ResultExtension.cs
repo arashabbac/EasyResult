@@ -1,4 +1,6 @@
-﻿namespace ResultHandler.Utility;
+﻿using EasyResult;
+
+namespace EasyResult.Utility;
 
 public static class ResultExtension
 {

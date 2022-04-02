@@ -1,6 +1,6 @@
-﻿using ResultHandler.Utility;
+﻿using EasyResult.Utility;
 
-namespace ResultHandler;
+namespace EasyResult;
 
 public class Result
 {
@@ -20,7 +20,7 @@ public class Result
 
         errorMessage = errorMessage.Fix()!;
 
-        if (string.IsNullOrEmpty(errorMessage) == false && 
+        if (string.IsNullOrEmpty(errorMessage) == false &&
             Errors.Contains(errorMessage) == false)
         {
             Errors.Add(errorMessage);
@@ -39,7 +39,7 @@ public class Result
     public Result WithSuccess(string message = "Operation has been done successfully!")
     {
         IsSuccess = true;
-        Errors.Clear(); 
+        Errors.Clear();
 
         message = message.Fix()!;
 
@@ -57,7 +57,7 @@ public class Result<TData> : Result where TData : class
 {
     public TData? Data { get; set; }
 
-    public Result<TData> WithData(TData data,string message = "Operation has been done successfully!")
+    public Result<TData> WithData(TData data, string message = "Operation has been done successfully!")
     {
         WithSuccess(message);
         Data = data;

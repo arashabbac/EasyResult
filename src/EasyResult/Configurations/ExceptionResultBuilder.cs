@@ -1,7 +1,7 @@
-﻿using ResultHandler.Services;
+﻿using EasyResult.Services;
 using System.Net;
 
-namespace ResultHandler.Configurations;
+namespace EasyResult.Configurations;
 
 public class ExceptionResultBuilder<T> where T : class
 {
@@ -13,7 +13,7 @@ public class ExceptionResultBuilder<T> where T : class
     }
 
     public void WithHttpStatusCode(HttpStatusCode httpStatusCode)
-    { 
-        _exceptionService.Add(typeof(T),httpStatusCode);
+    {
+        _exceptionService.Add(typeof(T), httpStatusCode);
     }
 }

@@ -1,13 +1,13 @@
-﻿using FluentAssertions;
+﻿using EasyResult.Exceptions;
+using EasyResult.Services;
+using EasyResultTests.Unit.Server;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using ResultHandler.Exceptions;
-using ResultHandler.Services;
-using ResultHandlerTests.Unit.Server;
 using System;
 using System.Net;
 using Xunit;
 
-namespace ResultHandlerTests.Unit;
+namespace EasyResultTests.Unit;
 
 public class ExceptionServiceTests : TestFixture
 {
@@ -22,7 +22,7 @@ public class ExceptionServiceTests : TestFixture
     public void Throw_Exception_On_Add_If_Type_Is_Not_Exception()
     {
         Action act = () => _exceptionService.Add(typeof(CollectionAttribute), HttpStatusCode.BadRequest);
-        
+
         act.Should().Throw<ArgumentException>()
             .WithMessage("Only exception type is allowed!");
     }
@@ -35,13 +35,13 @@ public class ExceptionServiceTests : TestFixture
         Action act = () => _exceptionService.Add(typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized);
 
         act.Should().Throw<DuplicateWaitObjectException>()
-            .Where(c=> c.Message.Contains("This exception type has already defined!"));
+            .Where(c => c.Message.Contains("This exception type has already defined!"));
     }
 
     [Fact]
     public void Throw_Exception_On_Add_Null_Object()
     {
-        Action act = () => _exceptionService.Add(null!,HttpStatusCode.Forbidden);
+        Action act = () => _exceptionService.Add(null!, HttpStatusCode.Forbidden);
 
         act.Should().Throw<ArgumentNullException>();
     }

@@ -1,21 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EasyResult.Exceptions;
+using EasyResult.Utility;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ResultHandler.Exceptions;
-using ResultHandler.Utility;
 using System.Net;
 using System.Text.Json;
 
-namespace ResultHandler;
+namespace EasyResult;
 
 public class ActionResultFilterAttribute : ActionFilterAttribute
 {
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if(context.Result is ObjectResult)
+        if (context.Result is ObjectResult)
         {
             var result = (ObjectResult)context.Result;
 
-            var value = IsIn200Range(result.StatusCode) ? 
+            var value = IsIn200Range(result.StatusCode) ?
                         result.Value.ToResult() :
                         new Result().WithError(JsonSerializer.Serialize(result.Value));
 
@@ -28,11 +28,11 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
 
             context.Result = objectResult;
         }
-        if(context.Result is StatusCodeResult)
+        if (context.Result is StatusCodeResult)
         {
             var result = (StatusCodeResult)context.Result;
 
-            var value = IsIn200Range(result.StatusCode) ? 
+            var value = IsIn200Range(result.StatusCode) ?
                         new Result().WithSuccess() :
                         new Result().WithError();
 
@@ -61,7 +61,7 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
 
     private static bool IsIn200Range(int? statusCode)
     {
-        if(statusCode is null) 
+        if (statusCode is null)
             throw new BadRequestException("Http Status code is null");
 
         return (HttpStatusCode)statusCode.Value switch
