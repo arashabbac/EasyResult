@@ -4,6 +4,10 @@
 You do not have to pass Result object throughout your project, This library is a wrapper on your endpoints
 and convert your object into Result object for both success and error scenarios.**
 
+You can install [EasyResult with NuGet](https://www.nuget.org/packages/EasyResult/)
+```
+Install-Package EasyResult
+```
 
 ## Description
 This library gives you two options for handling error scenarios:
