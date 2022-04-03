@@ -108,4 +108,10 @@ public class FakeController : ControllerBase
         var result = new Result().WithError();
         return Ok(result);
     }
+
+    [HttpGet]
+    public IActionResult Unauthorized()
+    {
+        throw new System.UnauthorizedAccessException("This method is unauthorized!");
+    }
 }

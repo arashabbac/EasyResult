@@ -30,8 +30,6 @@ public class ExceptionServiceTests : TestFixture
     [Fact]
     public void Throw_Exception_On_Add_If_Exception_Is_Duplicated()
     {
-        _exceptionService.Add(typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized);
-
         Action act = () => _exceptionService.Add(typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized);
 
         act.Should().Throw<DuplicateWaitObjectException>()
@@ -49,11 +47,11 @@ public class ExceptionServiceTests : TestFixture
     [Fact]
     public void Add_Exception_Successfully()
     {
-        _exceptionService.Add(typeof(ApplicationException), HttpStatusCode.NotImplemented);
+        _exceptionService.Add(typeof(AggregateException), HttpStatusCode.ServiceUnavailable);
 
         var exceptions = _exceptionService.GetExceptions();
         exceptions.Keys.Should().Contain(typeof(ApplicationException));
-        exceptions.Values.Should().Contain(HttpStatusCode.NotImplemented);
+        exceptions.Values.Should().Contain(HttpStatusCode.ServiceUnavailable);
     }
 
     [Fact]

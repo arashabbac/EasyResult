@@ -54,7 +54,7 @@ public static class EasyResultExtensions
 
             using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
             var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
-
+            
             var builderObj = Activator.CreateInstance(genericBuilder, new object[] { exceptionService });
             var exceptionObj = Activator.CreateInstance(ex);
 

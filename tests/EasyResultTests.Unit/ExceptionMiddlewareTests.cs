@@ -86,4 +86,19 @@ public class ExceptionMiddlewareTests : TestFixture
         result.Successes.Should().BeEmpty();
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
+
+
+    [Fact]
+    public async Task Test_Unauthorized_Exception()
+    {
+        var response = await Server.Host.GetTestClient().GetAsync("Fake/Unauthorized");
+
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+
+        result!.IsSuccess.Should().BeFalse();
+        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().Contain("This method is unauthorized!");
+        result.Successes.Should().BeEmpty();
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }
