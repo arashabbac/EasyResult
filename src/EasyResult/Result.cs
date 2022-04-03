@@ -36,7 +36,7 @@ public class Result
         return this;
     }
 
-    public Result WithSuccess(string message = "Operation has been done successfully!")
+    public virtual Result WithSuccess(string message = "Operation has been done successfully!")
     {
         IsSuccess = true;
         Errors.Clear();
@@ -57,9 +57,27 @@ public class Result<TData> : Result where TData : class
 {
     public TData? Data { get; set; }
 
-    public Result<TData> WithData(TData data, string message = "Operation has been done successfully!")
+    public override Result<TData> WithSuccess(string message = "Operation has been done successfully!")
     {
-        WithSuccess(message);
+        IsSuccess = true;
+        Errors.Clear();
+
+        message = message.Fix()!;
+
+        if (string.IsNullOrEmpty(message) == false &&
+            Successes.Contains(message) == false)
+        {
+            Successes.Add(message);
+        }
+
+        return this;
+    }
+
+    public Result<TData> WithData(TData data)
+    {
+        IsSuccess = true;
+        Errors.Clear();
+
         Data = data;
         return this;
     }

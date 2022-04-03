@@ -136,7 +136,7 @@ public class ResultTests
 
         result.WithData(data);
 
-        result.Successes.Should().HaveCount(1);
+        result.Successes.Should().BeEmpty();
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         result.Data.Should().BeEquivalentTo(data);
@@ -150,7 +150,7 @@ public class ResultTests
         var data = new { FirstName = "Arash", LastName = "Abbac" };
 
         var message = "Operation successfull";
-        result.WithData(data, message);
+        result.WithSuccess(message).WithData(data);
 
         result.Successes.Should().HaveCount(1);
         result.Successes.Should().Contain(message);

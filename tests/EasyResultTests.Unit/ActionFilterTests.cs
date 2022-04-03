@@ -90,7 +90,7 @@ public class ActionFilterTests : TestFixture
 
         result!.Errors.Should().BeEmpty();
         result.IsSuccess.Should().BeTrue();
-        result.Successes.Should().HaveCount(1);
+        result.Successes.Should().BeEmpty();
         result.Data.Should().BeEquivalentTo(new Person
         {
             Id = 1,
@@ -112,5 +112,54 @@ public class ActionFilterTests : TestFixture
         result.IsSuccess.Should().BeTrue();
         result.Successes.Should().HaveCount(1);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Retrun_BadRequest_With_Result_Object()
+    {
+        var response = await Server.Host.GetTestClient().GetAsync("Fake/Result");
+
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+
+        result!.Successes.Should().BeEmpty();
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().Contain("personId must have value!");
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Retrun_Ok_With_Result_Object()
+    {
+        var response = await Server.Host.GetTestClient().GetAsync("Fake/Result/1");
+
+        var result = await response.Content.ReadFromJsonAsync<Result<Person>>();
+
+        result!.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+        result.Successes.Should().BeEmpty();
+        result.Data.Should().BeEquivalentTo(new Person
+        {
+            Id = 1,
+            FirstName = "Arash",
+            LastName = "Abbac",
+            IsActive = true,
+        }); 
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Return_InternalServerError_If_Success_Result_Without_200Range_Status_Code()
+    {
+        var response = await Server.Host.GetTestClient().GetAsync("Fake/Result/10");
+
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+
+        result!.Successes.Should().BeEmpty();
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().Contain("Incorrect Result object!," +
+                            " You can not return successful result without 200 range status codes!");
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
 }

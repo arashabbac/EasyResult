@@ -1,5 +1,5 @@
-﻿using EasyResult.Exceptions;
-using EasyResult.Services;
+﻿using EasyResult.Services;
+using EasyResultTests.Unit.Doubles.Exceptions;
 using EasyResultTests.Unit.Server;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;

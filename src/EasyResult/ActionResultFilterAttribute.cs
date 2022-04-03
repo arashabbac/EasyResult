@@ -1,5 +1,4 @@
-﻿using EasyResult.Exceptions;
-using EasyResult.Utility;
+﻿using EasyResult.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
@@ -14,10 +13,31 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         if (context.Result is ObjectResult)
         {
             var result = (ObjectResult)context.Result;
+            
+            object? value = result.Value;
+            if (IsIn200Range(result.StatusCode))
+            {
+                if (IsResultObject(result.Value) == false)
+                {
+                    value = result.Value.ToResult();
+                }
+            }
+            else
+            {
+                if (IsResultObject(result.Value) == false)
+                {
+                    value = new Result().WithError(JsonSerializer.Serialize(result.Value));
+                }
+                else
+                {
+                    var obj = result.Value as Result;
 
-            var value = IsIn200Range(result.StatusCode) ?
-                        result.Value.ToResult() :
-                        new Result().WithError(JsonSerializer.Serialize(result.Value));
+                    if (obj!.IsSuccess || obj!.Successes.Count > 0)
+                        throw new ApplicationException("Incorrect Result object!," +
+                            " You can not return successful result without 200 range status codes!");
+                }
+            }
+
 
             var objectResult = new ObjectResult(value)
             {
@@ -62,7 +82,7 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
     private static bool IsIn200Range(int? statusCode)
     {
         if (statusCode is null)
-            throw new BadRequestException("Http Status code is null");
+            throw new ApplicationException("Http Status code is null");
 
         return (HttpStatusCode)statusCode.Value switch
         {
@@ -74,5 +94,10 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
             HttpStatusCode.AlreadyReported => true,
             _ => false,
         };
+    }
+
+    private static bool IsResultObject(object? obj)
+    {
+        return obj is Result;
     }
 }

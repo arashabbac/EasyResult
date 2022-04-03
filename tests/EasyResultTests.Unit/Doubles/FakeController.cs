@@ -1,4 +1,5 @@
-﻿using EasyResult.Exceptions;
+﻿using EasyResult;
+using EasyResultTests.Unit.Doubles.Exceptions;
 using EasyResultTests.Unit.Doubles.FakeObjects;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -74,6 +75,30 @@ public class FakeController : ControllerBase
             throw new KeyNotFoundException("This is key not found exception!(built-in exception that we register it!)");
 
         else
-            throw new System.Exception("This is unhandled exception!");
+            throw new System.Exception("This is an unhandled exception!");
+    }
+
+    [HttpGet("{personId?}")]
+    public IActionResult Result(int? personId)
+    {
+        if(personId is null)
+        {
+            var result = new Result().WithError("personId must have value!");
+
+            return BadRequest(result);
+        }
+
+        var person = _people.Find(c=> c.Id == personId);
+
+        if(person is null)
+        {
+            //return error result with success to test filter business
+            var result = new Result().WithSuccess("person not found!");
+            return NotFound(result);
+        }
+
+        var personResult = new Result<Person>().WithData(person);
+
+        return Ok(personResult);
     }
 }

@@ -82,7 +82,7 @@ public class ExceptionMiddlewareTests : TestFixture
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Should().Contain("This is unhandled exception!");
+        result.Errors.Should().Contain("This is an unhandled exception!");
         result.Successes.Should().BeEmpty();
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }

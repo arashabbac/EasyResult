@@ -1,6 +1,7 @@
 ﻿using EasyResult.Configurations;
+using System;
 
-namespace EasyResult.Exceptions;
+namespace EasyResultTests.Unit.Doubles.Exceptions;
 
 public class BadRequestException : Exception, IExceptionResult<BadRequestException>
 {
