@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Logging;
 using EasyResult.Utility;
 using EasyResult.Services;
+using System.Text.Json;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EasyResult;
 
@@ -27,8 +30,13 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
+            var jsonOptions = context.RequestServices.GetService<IOptions<JsonSerializerOptions>>();
             context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByExceptionType(ex);
-            await context.Response.WriteAsJsonAsync(ex.ToResult());
+
+            if(jsonOptions != null)
+                await context.Response.WriteAsJsonAsync(ex.ToResult(),jsonOptions.Value);
+            else
+                await context.Response.WriteAsJsonAsync(ex.ToResult());
 
             _logger.LogError("::::::::::::::::::: Exception :::::::::::::::::::");
             _logger.LogError($"Message ::::::::::::::::::: {ex.Message} :::::::::::::::::::");

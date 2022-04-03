@@ -149,7 +149,7 @@ public class ActionFilterTests : TestFixture
     }
 
     [Fact]
-    public async Task Return_InternalServerError_If_Success_Result_Without_200Range_Status_Code()
+    public async Task Return_InternalServerError_If_Success_Result_Comes_Without_200Range_Status_Code()
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/Result/10");
 
@@ -160,6 +160,21 @@ public class ActionFilterTests : TestFixture
         result.Errors.Should().HaveCount(1);
         result.Errors.Should().Contain("Incorrect Result object!," +
                             " You can not return successful result without 200 range status codes!");
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+
+    [Fact]
+    public async Task Return_InternalServerError_If_Error_Result_Comes_With_200Range_Status_Code()
+    {
+        var response = await Server.Host.GetTestClient().GetAsync("Fake/ErrorResult");
+
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+
+        result!.Successes.Should().BeEmpty();
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().Contain("Incorrect Result object!," +
+                            " You can not return error result with 200 range status codes!");
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
 }

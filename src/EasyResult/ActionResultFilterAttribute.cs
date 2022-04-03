@@ -14,30 +14,7 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         {
             var result = (ObjectResult)context.Result;
             
-            object? value = result.Value;
-            if (IsIn200Range(result.StatusCode))
-            {
-                if (IsResultObject(result.Value) == false)
-                {
-                    value = result.Value.ToResult();
-                }
-            }
-            else
-            {
-                if (IsResultObject(result.Value) == false)
-                {
-                    value = new Result().WithError(JsonSerializer.Serialize(result.Value));
-                }
-                else
-                {
-                    var obj = result.Value as Result;
-
-                    if (obj!.IsSuccess || obj!.Successes.Count > 0)
-                        throw new ApplicationException("Incorrect Result object!," +
-                            " You can not return successful result without 200 range status codes!");
-                }
-            }
-
+            var value = ConvertObjectResult(result);
 
             var objectResult = new ObjectResult(value)
             {
@@ -96,8 +73,45 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         };
     }
 
-    private static bool IsResultObject(object? obj)
+    private static bool IsResultType(object? obj)
     {
         return obj is Result;
+    }
+
+    private static object? ConvertObjectResult(ObjectResult objectResult)
+    {
+        object? value = objectResult.Value;
+        if (IsIn200Range(objectResult.StatusCode))
+        {
+            if (IsResultType(objectResult.Value) == false)
+            {
+                value = objectResult.Value.ToResult();
+            }
+            else
+            {
+                var obj = objectResult.Value as Result;
+
+                if (obj!.IsSuccess == false || obj!.Errors.Count > 0)
+                    throw new ApplicationException("Incorrect Result object!," +
+                        " You can not return error result with 200 range status codes!");
+            }
+        }
+        else
+        {
+            if (IsResultType(objectResult.Value) == false)
+            {
+                value = new Result().WithError(JsonSerializer.Serialize(objectResult.Value));
+            }
+            else
+            {
+                var obj = objectResult.Value as Result;
+
+                if (obj!.IsSuccess || obj!.Successes.Count > 0)
+                    throw new ApplicationException("Incorrect Result object!," +
+                        " You can not return successful result without 200 range status codes!");
+            }
+        }
+
+        return value;
     }
 }

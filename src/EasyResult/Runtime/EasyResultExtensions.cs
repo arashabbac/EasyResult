@@ -19,6 +19,7 @@ public static class EasyResultExtensions
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
+
         return mvcBuilder;
     }
 

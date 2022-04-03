@@ -101,4 +101,11 @@ public class FakeController : ControllerBase
 
         return Ok(personResult);
     }
+
+    [HttpGet]
+    public IActionResult ErrorResult()
+    {
+        var result = new Result().WithError();
+        return Ok(result);
+    }
 }
