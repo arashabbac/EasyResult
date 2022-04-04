@@ -6,11 +6,11 @@ public static class ResultExtension
 {
     internal static Result ToResult(this object? value)
     {
-        return value is null ?
-            throw new ArgumentNullException(nameof(value)) : new Result<object>().WithData(value);
+        ArgumentNullException.ThrowIfNull(nameof(value));
+       return new Result<object>().WithData(value);
     }
 
-    internal static Result ToResult(string message = "عمیات با موفقیت انجام شد")
+    internal static Result ToResult(string message = "")
     {
         var result = new Result();
         result.WithSuccess(message);

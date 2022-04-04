@@ -10,18 +10,21 @@ public static class EasyResultExtensions
 {
     public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder)
     {
-        mvcBuilder.Services.AddSingleton<ExceptionService>();
+      mvcBuilder.Services.AddSingleton<ExceptionService>();
+      mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
+
+
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
     }
 
-    public static IMvcCoreBuilder AddEasyResult(this IMvcCoreBuilder mvcBuilder)
-    {
-        mvcBuilder.Services.AddSingleton<ExceptionService>();
-        mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
+    //public static IMvcCoreBuilder AddEasyResult(this IMvcCoreBuilder mvcBuilder)
+    //{
+    //    mvcBuilder.Services.AddSingleton<ExceptionService>();
+    //    mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
 
-        return mvcBuilder;
-    }
+    //    return mvcBuilder;
+    //}
 
     public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app)
     {
@@ -30,35 +33,31 @@ public static class EasyResultExtensions
         return app;
     }
 
-    private static void AddExceptionsFromAssemblies(IApplicationBuilder app)
+    private static void AddExceptionsFromAssemblies(IApplicationBuilder app, params Assembly[] assemblies)
     {
-        var allExceptionTypesInAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+        var ass = AppDomain.CurrentDomain.GetAssemblies();
+        ass.Concat(assemblies);
+        var validExceptionTypes = ass
             .SelectMany(s => s.GetTypes())
-            .Where(p => p.IsSubclassOf(typeof(Exception)) && p.IsClass);
+            .Where(p => p.IsSubclassOf(typeof(Exception)) && p.IsClass &&!p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);// ???
 
-        var validExceptionTypes = new List<Type>();
 
-        foreach (Type type in allExceptionTypesInAssemblies)
-        {
-            if (type.GetInterface(typeof(IExceptionResult<>).Name.ToString()) is not null)
-            {
-                validExceptionTypes.Add(type);
-            }
-        }
+        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
+        //var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
+       
 
         foreach (var ex in validExceptionTypes)
         {
             var method = ex.GetMethod("Configure");
+           var wrapper = typeof(ExceptionResultBuilder<>).MakeGenericType(ex);
+           var genericBuilder = scope.ServiceProvider.GetService(wrapper);
 
-            Type genericBuilder = typeof(ExceptionResultBuilder<>).MakeGenericType(ex.UnderlyingSystemType);
+            //  Type genericBuilderType = typeof(ExceptionResultBuilder<>).MakeGenericType(ex.UnderlyingSystemType);
+            //  var genericBuilder = Activator.CreateInstance(genericBuilderType, new object[] { exceptionService });
 
-            using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
-            var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
-            
-            var builderObj = Activator.CreateInstance(genericBuilder, new object[] { exceptionService });
             var exceptionObj = Activator.CreateInstance(ex);
 
-            method!.Invoke(exceptionObj, new object[] { builderObj! });
+            method!.Invoke(exceptionObj, new object[] { genericBuilder! });
         }
     }
 }
