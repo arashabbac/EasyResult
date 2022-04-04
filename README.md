@@ -1,6 +1,6 @@
 # EasyResult
 
-**EasyResult is a lightweight library that could be used in your API projects that can handle exceptions<br/>
+**EasyResult is a lightweight library that could be used in your API projects and can handle exceptions<br/>
 You do not have to pass Result object throughout your project, This library is a wrapper on your endpoints
 and convert your object into Result object for both success and error scenarios.**
 
@@ -64,7 +64,7 @@ There are two ways to register exceptions in EasyResult:
   ```
   
   2. Use ExceptionService<br/>
-     In order to use this way, you have to write a middlware as code below:
+     In order to use this way, you have to write a middleware as code below:
   
   ```
   public static void AddExceptions(IApplicationBuilder app)
