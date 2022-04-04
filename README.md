@@ -22,19 +22,19 @@ Every exception type has only one HttpStatusCode and you have to register it in 
 You need to register easy result service as below in ConfigureService method:
 
 ```
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddControllers().AddEasyResult();
-    }
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllers().AddEasyResult();
+}
 ```
 
 for handling exceptions you have to use exception middleware in Configure method:
 
 ```
-    public void Configure(IApplicationBuilder app)
-    {
-        app.UseExceptionMiddleware();
-    }
+public void Configure(IApplicationBuilder app)
+{
+    app.UseExceptionMiddleware();
+}
 ```
 
 ## Configuration
