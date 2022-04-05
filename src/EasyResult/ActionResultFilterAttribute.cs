@@ -10,32 +10,30 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
 {
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (context.Result is ObjectResult)
+        if (context.Result is ObjectResult objResult)
         {
-            var result = (ObjectResult)context.Result;
-            
-            var value = ConvertObjectResult(result);
+
+            var value = ConvertObjectResult(objResult);
 
             var objectResult = new ObjectResult(value)
             {
-                StatusCode = result.StatusCode,
-                ContentTypes = result.ContentTypes,
-                DeclaredType = result.DeclaredType
+                StatusCode = objResult.StatusCode,
+                ContentTypes = objResult.ContentTypes,
+                DeclaredType = objResult.DeclaredType
             };
 
             context.Result = objectResult;
         }
-        if (context.Result is StatusCodeResult)
+        if (context.Result is StatusCodeResult statusCodeResult)
         {
-            var result = (StatusCodeResult)context.Result;
 
-            var value = IsIn200Range(result.StatusCode) ?
+            var value = IsIn200Range(statusCodeResult.StatusCode) ?
                         new Result().WithSuccess() :
                         new Result().WithError();
 
             var objectResult = new ObjectResult(value)
             {
-                StatusCode = result.StatusCode,
+                StatusCode = statusCodeResult.StatusCode,
             };
 
             context.Result = objectResult;
