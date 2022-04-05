@@ -5,13 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>Arash Abbac</Authors>
+    <Authors>Arash Abbac,Amar Potki</Authors>
     <Description>EasyResult is a lightweight library that could be used in your API projects that can handle exceptions</Description>
     <Copyright>MIT</Copyright>
     <PackageProjectUrl>https://github.com/arashabbac/EasyResult</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/arashabbac/EasyResult</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
