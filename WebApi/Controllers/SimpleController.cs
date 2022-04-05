@@ -14,15 +14,23 @@ namespace WebApi.Controllers
         {
             _logger = logger;
         }
+
         [HttpGet("ThrowException")]
         public IActionResult ThrowException()
         {
             throw new SimpleException("test");
         }
+
         [HttpGet("Success")]
         public IActionResult Success()
         {
             return Ok("Ok");
+        }
+
+        [HttpGet("Fail")]
+        public IActionResult Fail ()
+        {
+            return BadRequest("Failed process");
         }
     }
 }

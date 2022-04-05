@@ -10,21 +10,12 @@ public static class EasyResultExtensions
 {
     public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder)
     {
-      mvcBuilder.Services.AddSingleton<ExceptionService>();
-      mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
-
+        mvcBuilder.Services.AddSingleton<ExceptionService>();
+        mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
 
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
     }
-
-    //public static IMvcCoreBuilder AddEasyResult(this IMvcCoreBuilder mvcBuilder)
-    //{
-    //    mvcBuilder.Services.AddSingleton<ExceptionService>();
-    //    mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
-
-    //    return mvcBuilder;
-    //}
 
     public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app)
     {
@@ -39,21 +30,17 @@ public static class EasyResultExtensions
         ass.Concat(assemblies);
         var validExceptionTypes = ass
             .SelectMany(s => s.GetTypes())
-            .Where(p => p.IsSubclassOf(typeof(Exception)) && p.IsClass &&!p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);// ???
+            .Where(p => p.IsSubclassOf(typeof(Exception)) &&
+                p.IsClass &&!p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);
 
 
-        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
-        //var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
-       
+        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();       
 
         foreach (var ex in validExceptionTypes)
         {
             var method = ex.GetMethod("Configure");
-           var wrapper = typeof(ExceptionResultBuilder<>).MakeGenericType(ex);
-           var genericBuilder = scope.ServiceProvider.GetService(wrapper);
-
-            //  Type genericBuilderType = typeof(ExceptionResultBuilder<>).MakeGenericType(ex.UnderlyingSystemType);
-            //  var genericBuilder = Activator.CreateInstance(genericBuilderType, new object[] { exceptionService });
+            var wrapper = typeof(ExceptionResultBuilder<>).MakeGenericType(ex);
+            var genericBuilder = scope.ServiceProvider.GetService(wrapper);
 
             var exceptionObj = Activator.CreateInstance(ex);
 
