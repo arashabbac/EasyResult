@@ -12,7 +12,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/arashabbac/EasyResult</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.1</Version>
+    <Version>1.0.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
