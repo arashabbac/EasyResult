@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         [HttpGet("Success")]
         public IActionResult Success()
         {
-            return Ok("Ok");
+            return Ok(new { FirstName = "Amar" , LastName = "Potki" });
         }
 
         [HttpGet("Fail")]

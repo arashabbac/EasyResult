@@ -1,10 +1,10 @@
-using EasyResult.Runtime;
+﻿using EasyResult.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddEasyResult();
+builder.Services.AddControllers().AddEasyResult(option => option.SuccessDefaultMessage = "عملیات با موفقیت انجام شد!");
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

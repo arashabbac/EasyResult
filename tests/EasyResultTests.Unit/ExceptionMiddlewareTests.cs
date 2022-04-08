@@ -1,5 +1,6 @@
 ﻿using EasyResult;
 using EasyResult.Services;
+using EasyResultTests.Unit.Doubles;
 using EasyResultTests.Unit.Server;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
@@ -19,7 +20,7 @@ public class ExceptionMiddlewareTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/RaiseException");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -33,7 +34,7 @@ public class ExceptionMiddlewareTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/RaiseException/1");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -47,7 +48,7 @@ public class ExceptionMiddlewareTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/RaiseException/2");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -64,7 +65,7 @@ public class ExceptionMiddlewareTests : TestFixture
 
         var response = await Server.Host.GetTestClient().GetAsync("Fake/RaiseException/3");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -78,7 +79,7 @@ public class ExceptionMiddlewareTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/RaiseException/10");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
@@ -93,7 +94,7 @@ public class ExceptionMiddlewareTests : TestFixture
     {
         var response = await Server.Host.GetTestClient().GetAsync("Fake/Unauthorized");
 
-        var result = await response.Content.ReadFromJsonAsync<Result>();
+        var result = await response.Content.ReadFromJsonAsync<FakeResult>();
 
         result!.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(1);

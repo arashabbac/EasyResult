@@ -1,6 +1,8 @@
-﻿using EasyResult.Utility;
+﻿using EasyResult.Configurations;
+using EasyResult.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text.Json;
 
@@ -8,11 +10,18 @@ namespace EasyResult;
 
 public class ActionResultFilterAttribute : ActionFilterAttribute
 {
+    private readonly Result _result;
+    private readonly IOptions<ResultOptions> _options;
+    public ActionResultFilterAttribute(Result result, IOptions<ResultOptions> options)
+    {
+        _result = result;
+        _options = options;
+    }
+
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
         if (context.Result is ObjectResult objResult)
         {
-
             var value = ConvertObjectResult(objResult);
 
             var objectResult = new ObjectResult(value)
@@ -28,8 +37,8 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         {
 
             var value = IsIn200Range(statusCodeResult.StatusCode) ?
-                        new Result().WithSuccess() :
-                        new Result().WithError();
+                        _result.WithSuccess() :
+                        _result.WithError();
 
             var objectResult = new ObjectResult(value)
             {
@@ -40,15 +49,14 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         }
         if (context.ModelState.IsValid == false)
         {
-            var result = new Result();
             foreach (var item in context.ModelState)
             {
                 foreach (var error in item.Value.Errors)
                 {
-                    result.WithError($"{item.Key}: {error.ErrorMessage}");
+                    _result.WithError($"{item.Key}: {error.ErrorMessage}");
                 }
             }
-            context.Result = new BadRequestObjectResult(result);
+            context.Result = new BadRequestObjectResult(_result);
         }
 
         await base.OnResultExecutionAsync(context, next);
@@ -71,19 +79,16 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         };
     }
 
-    private static bool IsResultType(object? obj)
-    {
-        return obj is Result;
-    }
+    private static bool IsResultType(object? obj) => obj is Result;
 
-    private static object? ConvertObjectResult(ObjectResult objectResult)
+    private object? ConvertObjectResult(ObjectResult objectResult)
     {
         object? value = objectResult.Value;
         if (IsIn200Range(objectResult.StatusCode))
         {
             if (IsResultType(objectResult.Value) == false)
             {
-                value = objectResult.Value.ToResult();
+                value = objectResult.Value.ToResult(_options);
             }
             else
             {
@@ -98,7 +103,7 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         {
             if (IsResultType(objectResult.Value) == false)
             {
-                value = new Result().WithError(JsonSerializer.Serialize(objectResult.Value));
+                value = _result.WithError(JsonSerializer.Serialize(objectResult.Value));
             }
             else
             {

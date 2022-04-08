@@ -1,14 +1,20 @@
-﻿using EasyResult.Utility;
+﻿using EasyResult.Configurations;
+using EasyResult.Utility;
+using Microsoft.Extensions.Options;
 
 namespace EasyResult;
 
 public class Result
 {
-    public Result()
+    protected readonly IOptions<ResultOptions> _options;
+
+    public Result(IOptions<ResultOptions> options)
     {
+        _options = options;
         Errors = new List<string>();
         Successes = new List<string>();
     }
+
     public bool IsSuccess { get; set; }
     public List<string> Errors { get; set; }
     public List<string> Successes { get; set; }
@@ -36,15 +42,16 @@ public class Result
         return this;
     }
 
-    public virtual Result WithSuccess(string message = "Operation has been done successfully!")
+    public virtual Result WithSuccess(string message = default!)
     {
         IsSuccess = true;
         Errors.Clear();
 
         message = message.Fix()!;
 
-        if (string.IsNullOrEmpty(message) == false &&
-            Successes.Contains(message) == false)
+        if (message is null) message = _options.Value.SuccessDefaultMessage;
+
+        if (Successes.Contains(message) == false)
         {
             Successes.Add(message);
         }
@@ -56,16 +63,19 @@ public class Result
 public class Result<TData> : Result where TData : class
 {
     public TData? Data { get; set; }
+   
+    public Result(IOptions<ResultOptions>? options): base(options!)
+    {
+    }
 
-    public override Result<TData> WithSuccess(string message = "Operation has been done successfully!")
+    public override Result<TData> WithSuccess(string message = default!)
     {
         IsSuccess = true;
         Errors.Clear();
 
-        message = message.Fix()!;
+        if (message is null) message = _options.Value.SuccessDefaultMessage;
 
-        if (string.IsNullOrEmpty(message) == false &&
-            Successes.Contains(message) == false)
+        if (Successes.Contains(message) == false)
         {
             Successes.Add(message);
         }
@@ -75,6 +85,8 @@ public class Result<TData> : Result where TData : class
 
     public Result<TData> WithData(TData data)
     {
+        ArgumentNullException.ThrowIfNull(data,nameof(data));
+
         IsSuccess = true;
         Errors.Clear();
 

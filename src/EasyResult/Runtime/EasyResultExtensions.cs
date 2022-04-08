@@ -8,10 +8,15 @@ namespace EasyResult.Runtime;
 
 public static class EasyResultExtensions
 {
-    public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder)
+    public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder,Action<ResultOptions>? options = null)
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
+        mvcBuilder.Services.AddTransient<Result>();
+        mvcBuilder.Services.AddTransient(typeof(Result<>));
+
+        if(options != null)
+            mvcBuilder.Services.Configure(options);
 
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
