@@ -6,11 +6,11 @@ namespace EasyResult;
 
 public class Result
 {
-    protected readonly IOptions<ResultOptions> _options;
-
-    public Result(IOptions<ResultOptions> options)
+    private readonly ResultOptions _options;
+    public ResultOptions Options => _options;
+    public Result()
     {
-        _options = options;
+        _options = ResultSetting.Options;
         Errors = new List<string>();
         Successes = new List<string>();
     }
@@ -49,7 +49,7 @@ public class Result
 
         message = message.Fix()!;
 
-        if (message is null) message = _options.Value.SuccessDefaultMessage;
+        if (message is null) message = _options.SuccessDefaultMessage;
 
         if (Successes.Contains(message) == false)
         {
@@ -63,9 +63,10 @@ public class Result
 public class Result<TData> : Result where TData : class
 {
     public TData? Data { get; set; }
-   
-    public Result(IOptions<ResultOptions>? options): base(options!)
+
+    public Result() 
     {
+
     }
 
     public override Result<TData> WithSuccess(string message = default!)
@@ -73,7 +74,7 @@ public class Result<TData> : Result where TData : class
         IsSuccess = true;
         Errors.Clear();
 
-        if (message is null) message = _options.Value.SuccessDefaultMessage;
+        message = Options.SuccessDefaultMessage;
 
         if (Successes.Contains(message) == false)
         {
@@ -85,7 +86,7 @@ public class Result<TData> : Result where TData : class
 
     public Result<TData> WithData(TData data)
     {
-        ArgumentNullException.ThrowIfNull(data,nameof(data));
+        ArgumentNullException.ThrowIfNull(data, nameof(data));
 
         IsSuccess = true;
         Errors.Clear();
@@ -94,3 +95,4 @@ public class Result<TData> : Result where TData : class
         return this;
     }
 }
+

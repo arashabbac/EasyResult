@@ -1,3 +1,4 @@
+using EasyResult;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Exceptions;
 
@@ -9,10 +10,12 @@ namespace WebApi.Controllers
     {
 
         private readonly ILogger<SimpleController> _logger;
+   
 
         public SimpleController(ILogger<SimpleController> logger)
         {
             _logger = logger;
+         
         }
 
         [HttpGet("ThrowException")]
@@ -24,7 +27,7 @@ namespace WebApi.Controllers
         [HttpGet("Success")]
         public IActionResult Success()
         {
-            return Ok(new { FirstName = "Amar" , LastName = "Potki" });
+            return Ok((new { FirstName = "Amar" , LastName = "Potki" }));
         }
 
         [HttpGet("Fail")]

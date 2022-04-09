@@ -87,7 +87,7 @@ public class FakeController : ControllerBase
     {
         if(personId is null)
         {
-            var result = new Result(_options).WithError("personId must have value!");
+            var result = new Result().WithError("personId must have value!");
 
             return BadRequest(result);
         }
@@ -97,11 +97,11 @@ public class FakeController : ControllerBase
         if(person is null)
         {
             //return error result with success to test filter business
-            var result = new Result(_options).WithSuccess("person not found!");
+            var result = new Result().WithSuccess("person not found!");
             return NotFound(result);
         }
 
-        var personResult = new Result<Person>(_options).WithData(person);
+        var personResult = new Result<Person>().WithData(person);
 
         return Ok(personResult);
     }
@@ -109,7 +109,7 @@ public class FakeController : ControllerBase
     [HttpGet]
     public IActionResult ErrorResult()
     {
-        var result = new Result(_options).WithError();
+        var result = new Result().WithError();
         return Ok(result);
     }
 
