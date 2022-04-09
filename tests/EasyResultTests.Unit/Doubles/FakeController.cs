@@ -1,7 +1,9 @@
 ﻿using EasyResult;
+using EasyResult.Configurations;
 using EasyResultTests.Unit.Doubles.Exceptions;
 using EasyResultTests.Unit.Doubles.FakeObjects;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,9 +14,11 @@ namespace EasyResultTests.Unit.Doubles;
 public class FakeController : ControllerBase
 {
     private readonly List<Person> _people;
+    private readonly IOptions<ResultOptions> _options;
 
-    public FakeController()
+    public FakeController(IOptions<ResultOptions> options)
     {
+        _options = options;
         _people = new List<Person>
         {
             new Person{ Id = 1, FirstName = "Arash",LastName="Abbac",IsActive = true},
@@ -113,5 +117,11 @@ public class FakeController : ControllerBase
     public IActionResult Unauthorized()
     {
         throw new System.UnauthorizedAccessException("This method is unauthorized!");
+    }
+
+    [HttpGet]
+    public IActionResult NullData()
+    {
+        return Ok(null);
     }
 }

@@ -57,7 +57,7 @@ public class ExceptionServiceTests : TestFixture
     [Fact]
     public void Get_InternalServerError_StatusCode_If_Exception_Is_Not_Defined()
     {
-        var statusCode = _exceptionService.GetHttpStatusCodeByExceptionType(new AggregateException());
+        var statusCode = _exceptionService.GetHttpStatusCodeByException(new AggregateException());
 
         statusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
@@ -65,7 +65,7 @@ public class ExceptionServiceTests : TestFixture
     [Fact]
     public void Get_NotFound_StatusCode_For_NotFoundException()
     {
-        var statusCode = _exceptionService.GetHttpStatusCodeByExceptionType(new NotFoundException());
+        var statusCode = _exceptionService.GetHttpStatusCodeByException(new NotFoundException());
 
         statusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -73,7 +73,7 @@ public class ExceptionServiceTests : TestFixture
     [Fact]
     public void Get_BadRequest_StatusCode_For_BadRequestException()
     {
-        var statusCode = _exceptionService.GetHttpStatusCodeByExceptionType(new BadRequestException());
+        var statusCode = _exceptionService.GetHttpStatusCodeByException(new BadRequestException());
 
         statusCode.Should().Be(HttpStatusCode.BadRequest);
     }

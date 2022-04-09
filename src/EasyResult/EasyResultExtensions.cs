@@ -3,16 +3,17 @@ using EasyResult.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using ResultOptions = EasyResult.Configurations.ResultOptions;
 
-namespace EasyResult.Runtime;
+namespace EasyResult;
 
 public static class EasyResultExtensions
 {
-    public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder)
+    public static IMvcBuilder AddEasyResult(this IMvcBuilder mvcBuilder, Action<ResultOptions>? options = default)
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
-
+        ResultOptionSetup.Setup(options);
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
     }
@@ -24,17 +25,17 @@ public static class EasyResultExtensions
         return app;
     }
 
-    private static void AddExceptionsFromAssemblies(IApplicationBuilder app, params Assembly[] assemblies)
+    private static void AddExceptionsFromAssemblies(IApplicationBuilder app, params Assembly[] additionalAssemblies)
     {
-        var ass = AppDomain.CurrentDomain.GetAssemblies();
-        ass.Concat(assemblies);
-        var validExceptionTypes = ass
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        var validExceptionTypes = 
+            assemblies.Concat(additionalAssemblies)
             .SelectMany(s => s.GetTypes())
             .Where(p => p.IsSubclassOf(typeof(Exception)) &&
-                p.IsClass &&!p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);
+                p.IsClass && !p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);
 
-
-        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();       
+        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
 
         foreach (var ex in validExceptionTypes)
         {

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using EasyResult.Utility;
 using EasyResult.Services;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyResult;
@@ -13,13 +12,15 @@ public class ExceptionMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
     private readonly ExceptionService _exceptionService;
-
+    private readonly JsonOptions _jsonOptions;
     public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger,
-        RequestDelegate next, ExceptionService exceptionService)
+        RequestDelegate next, ExceptionService exceptionService,
+        IOptions<JsonOptions> jsonOptions)
     {
         _logger = logger;
         _next = next;
         _exceptionService = exceptionService;
+        _jsonOptions = jsonOptions.Value;
     }
 
     public async Task Invoke(HttpContext context)
@@ -30,13 +31,9 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            var jsonOptions = context.RequestServices.GetService<IOptions<JsonOptions>>();
-            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByExceptionType(ex);
+            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByException(ex);
 
-            if(jsonOptions is not null && jsonOptions?.Value is not null)
-                await context.Response.WriteAsJsonAsync(ex.ToResult(),jsonOptions.Value.JsonSerializerOptions);
-            else
-                await context.Response.WriteAsJsonAsync(ex.ToResult());
+            await context.Response.WriteAsJsonAsync(ex.ToResult(),_jsonOptions.JsonSerializerOptions);
 
             _logger.LogError("::::::::::::::::::: Exception :::::::::::::::::::");
             _logger.LogError($"Message ::::::::::::::::::: {ex.Message} :::::::::::::::::::");

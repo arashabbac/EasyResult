@@ -1,16 +1,13 @@
-﻿using EasyResult;
-
-namespace EasyResult.Utility;
+﻿namespace EasyResult.Utility;
 
 public static class ResultExtension
 {
     internal static Result ToResult(this object? value)
     {
-        ArgumentNullException.ThrowIfNull(nameof(value));
-       return new Result<object>().WithData(value);
+        return new Result<object>().WithData(value!);
     }
 
-    internal static Result ToResult(string message = "")
+    internal static Result ToResult(string message = default!)
     {
         var result = new Result();
         result.WithSuccess(message);

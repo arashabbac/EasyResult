@@ -1,11 +1,22 @@
 ﻿using EasyResult;
+using EasyResult.Configurations;
+using EasyResultTests.Unit.Server;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 using Xunit;
 
 namespace EasyResultTests.Unit;
 
-public class ResultTests
+public class ResultTests : TestFixture
 {
+    
+    public ResultTests()
+    {
+        
+    }
+
     [Fact]
     public void Result_With_Error()
     {
@@ -103,13 +114,14 @@ public class ResultTests
     [InlineData(null)]
     [InlineData("    ")]
     [InlineData("")]
-    public void Result_With_Success_And_Incorrect_Messsages(string? message)
+    public void Result_With_Success_And_Incorrect_Messsages_Must_Return_Default_Message(string? message)
     {
         var result = new Result();
 
         result.WithSuccess(message!);
 
-        result.Successes.Should().BeEmpty();
+        result.Successes.Should().HaveCount(1);
+        result.Successes.Should().Contain(result.GetOption()!.SuccessDefaultMessage);
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
     }
@@ -122,7 +134,7 @@ public class ResultTests
         result.WithSuccess();
 
         result.Successes.Should().HaveCount(1);
-        result.Successes.Should().Contain("Operation has been done successfully!");
+        result.Successes.Should().Contain(result.GetOption()!.SuccessDefaultMessage);
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
     }
@@ -140,6 +152,16 @@ public class ResultTests
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         result.Data.Should().BeEquivalentTo(data);
+    }
+
+    [Fact]
+    public void Result_With_Null_Data()
+    {
+        var result = new Result<object>();
+
+        Action act = () => result.WithData(null!);
+
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]

@@ -1,10 +1,17 @@
-using EasyResult.Runtime;
+﻿using EasyResult;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddEasyResult();
+builder.Services.AddControllers()
+    //.AddJsonOptions(opt=> opt.JsonSerializerOptions.PropertyNamingPolicy = null)
+    .AddEasyResult(option => 
+    {
+        option.SuccessDefaultMessage = "عملیات با موفقیت انجام شد!";
+        option.UnhandledExceptionStatusCode = System.Net.HttpStatusCode.BadGateway;
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
