@@ -1,4 +1,4 @@
-﻿using EasyResult.Runtime;
+﻿using EasyResult;
 using EasyResult.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

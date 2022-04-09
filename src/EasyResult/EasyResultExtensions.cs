@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using ResultOptions = EasyResult.Configurations.ResultOptions;
 
-namespace EasyResult.Runtime;
+namespace EasyResult;
 
 public static class EasyResultExtensions
 {
@@ -13,15 +13,7 @@ public static class EasyResultExtensions
     {
         mvcBuilder.Services.AddSingleton<ExceptionService>();
         mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
-        mvcBuilder.Services.AddTransient<Result>();
-        mvcBuilder.Services.AddTransient(typeof(Result<>));
-
-
-
-
-
-        //  mvcBuilder.Services.Configure(options);
-        ResultSetting.Setup(options);
+        ResultOptionSetup.Setup(options);
         mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
         return mvcBuilder;
     }
@@ -33,15 +25,15 @@ public static class EasyResultExtensions
         return app;
     }
 
-    private static void AddExceptionsFromAssemblies(IApplicationBuilder app, params Assembly[] assemblies)
+    private static void AddExceptionsFromAssemblies(IApplicationBuilder app, params Assembly[] additionalAssemblies)
     {
-        var ass = AppDomain.CurrentDomain.GetAssemblies();
-        ass.Concat(assemblies);
-        var validExceptionTypes = ass
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        var validExceptionTypes = 
+            assemblies.Concat(additionalAssemblies)
             .SelectMany(s => s.GetTypes())
             .Where(p => p.IsSubclassOf(typeof(Exception)) &&
                 p.IsClass && !p.IsInterface && p.GetInterface(typeof(IExceptionResult<>).Name) is not null);
-
 
         using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
 

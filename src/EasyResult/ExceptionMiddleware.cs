@@ -3,9 +3,7 @@ using Microsoft.Extensions.Logging;
 using EasyResult.Utility;
 using EasyResult.Services;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
-using EasyResult.Configurations;
 
 namespace EasyResult;
 
@@ -14,15 +12,15 @@ public class ExceptionMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
     private readonly ExceptionService _exceptionService;
-    private readonly IOptions<ResultOptions> _options;
-
+    private readonly JsonOptions _jsonOptions;
     public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger,
-        RequestDelegate next, ExceptionService exceptionService, IOptions<ResultOptions> options)
+        RequestDelegate next, ExceptionService exceptionService,
+        IOptions<JsonOptions> jsonOptions)
     {
         _logger = logger;
         _next = next;
         _exceptionService = exceptionService;
-        _options = options;
+        _jsonOptions = jsonOptions.Value;
     }
 
     public async Task Invoke(HttpContext context)
@@ -33,13 +31,9 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            var jsonOptions = context.RequestServices.GetService<IOptions<JsonOptions>>();
-            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByExceptionType(ex);
+            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByException(ex);
 
-            if(jsonOptions is not null && jsonOptions?.Value is not null)
-                await context.Response.WriteAsJsonAsync(ex.ToResult(_options),jsonOptions.Value.JsonSerializerOptions);
-            else
-                await context.Response.WriteAsJsonAsync(ex.ToResult(_options));
+            await context.Response.WriteAsJsonAsync(ex.ToResult(),_jsonOptions.JsonSerializerOptions);
 
             _logger.LogError("::::::::::::::::::: Exception :::::::::::::::::::");
             _logger.LogError($"Message ::::::::::::::::::: {ex.Message} :::::::::::::::::::");

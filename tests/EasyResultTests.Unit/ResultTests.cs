@@ -121,29 +121,10 @@ public class ResultTests : TestFixture
         result.WithSuccess(message!);
 
         result.Successes.Should().HaveCount(1);
-        result.Successes.Should().Contain(result.Options.SuccessDefaultMessage);
+        result.Successes.Should().Contain(result.GetOption()!.SuccessDefaultMessage);
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
     }
-
-    //[Theory]
-    //[InlineData(null)]
-    //[InlineData("    ")]
-    //[InlineData("")]
-    //public void Result_With_Success_And_Incorrect_Messsages_Must_Return_MyDefault_Message(string? message)
-    //{
-    //    string myDefaultMessage = "عملیات با موفقیت انجام شد";
-    //    .Value.SuccessDefaultMessage = myDefaultMessage;
-
-    //    var result = new Result();
-
-    //    result.WithSuccess(message!);
-
-    //    result.Successes.Should().HaveCount(1);
-    //    result.Successes.Should().Contain(result.Options.SuccessDefaultMessage);
-    //    result.IsSuccess.Should().BeTrue();
-    //    result.Errors.Should().BeEmpty();
-    //}
 
     [Fact]
     public void Result_With_Success_And_Default_Message()
@@ -153,7 +134,7 @@ public class ResultTests : TestFixture
         result.WithSuccess();
 
         result.Successes.Should().HaveCount(1);
-        result.Successes.Should().Contain("Operation has been done successfully!");
+        result.Successes.Should().Contain(result.GetOption()!.SuccessDefaultMessage);
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
     }
