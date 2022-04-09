@@ -13,10 +13,15 @@
     <RepositoryUrl>https://github.com/arashabbac/EasyResult</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Version>1.0.2</Version>
+    <PackageIcon>logo.jpg</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	  <None Include="..\..\logo.jpg">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	  <None Include="..\..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
