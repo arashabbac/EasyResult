@@ -77,8 +77,8 @@ public void Configure(IApplicationBuilder app)
   }
   ```
   
-    2. Use ExceptionService<br/>
-        In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
+   2. Use ExceptionService<br/>
+    In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
   
   ```
   public static void AddExceptions(IApplicationBuilder app)
