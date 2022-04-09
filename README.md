@@ -25,9 +25,20 @@ You need to register easy result service as below in ConfigureService method:
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers().AddEasyResult();
+}
+```
 
-    //You can also set ResultOption as below:
-    //builder.Services.AddControllers().AddEasyResult(option => option.SuccessDefaultMessage = "My success default message!");
+You can also set ResultOption:
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    builder.Services.AddControllers()
+    .AddEasyResult(option => 
+    {
+        option.SuccessDefaultMessage = "My success default message!";
+        option.UnhandledExceptionStatusCode = HttpStatusCode.BadGateway;
+    });
 }
 ```
 
@@ -79,5 +90,5 @@ public void Configure(IApplicationBuilder app)
     exceptionService.Add(typeof(UnauthorizedAccessException),HttpStatusCode.Unauthorized);
   }
   ```
-  If some exception throws and you did not assign its HttpStatusCode, then EasyResult marked it as an unhandled exception and return 500 HttpStatusCode.
+  If some exception throws and you did not assign its HttpStatusCode, then EasyResult marked it as an unhandled exception and return 500 HttpStatusCode(Or whatever that configured in ResultOption).
   
