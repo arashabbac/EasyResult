@@ -53,9 +53,9 @@ public void Configure(IApplicationBuilder app)
 
 ## Configuration
 
-  There are two ways to register exceptions in EasyResult:
-    1. Use IExceptionResult interface (this way can only be used for your customize exceptions).<br/>
-        You have to inherit your customize exception from this generic interface and implement its method and assign your desireable HttpStatusCode
+  There are two ways to register exceptions in EasyResult:<br/>
+    1. Use IExceptionResult interface (this way could be used for your customize exceptions).<br/>
+    You have to inherit your customize exception from this generic interface and implement its method and assign your desireable HttpStatusCode
   ```
   public class BadRequestException : Exception, IExceptionResult<BadRequestException>
   {
@@ -77,8 +77,8 @@ public void Configure(IApplicationBuilder app)
   }
   ```
   
-   2. Use ExceptionService<br/>
-    In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
+2. Use ExceptionService<br/>
+In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
   
   ```
   public static void AddExceptions(IApplicationBuilder app)
