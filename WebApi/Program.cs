@@ -1,4 +1,5 @@
 ﻿using EasyResult;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.Services.AddControllers()
     {
         option.SuccessDefaultMessage = "عملیات با موفقیت انجام شد!";
         option.UnhandledExceptionStatusCode = System.Net.HttpStatusCode.BadGateway;
+    }).AddFluentValidation(options =>
+    {
+        options.RegisterValidatorsFromAssemblyContaining<Program>();
     });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
