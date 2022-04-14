@@ -18,6 +18,15 @@ public static class EasyResultExtensions
         return mvcBuilder;
     }
 
+    public static IMvcCoreBuilder AddEasyResult(this IMvcCoreBuilder mvcBuilder, Action<ResultOptions>? options = default)
+    {
+        mvcBuilder.Services.AddSingleton<ExceptionService>();
+        mvcBuilder.Services.AddSingleton(typeof(ExceptionResultBuilder<>));
+        ResultOptionSetup.Setup(options);
+        mvcBuilder.AddMvcOptions(c => c.Filters.Add(typeof(ActionResultFilterAttribute)));
+        return mvcBuilder;
+    }
+
     public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app)
     {
         AddExceptionsFromAssemblies(app);
