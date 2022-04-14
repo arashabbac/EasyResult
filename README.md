@@ -81,7 +81,7 @@ public void Configure(IApplicationBuilder app)
 In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
   
   ```
-  public static void AddExceptions(IApplicationBuilder app)
+  public static void AddExceptions(this IApplicationBuilder app)
   {
     using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
     var exceptionService = scope.ServiceProvider.GetRequiredService<ExceptionService>();
