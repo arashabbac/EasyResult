@@ -1,6 +1,6 @@
 # EasyResult
 
-**EasyResult is a lightweight library that could be used in your API projects and can handle exceptions<br/>
+**EasyResult is a lightweight library that could be used in your API projects and can handle exceptions  
 You do not have to pass Result object throughout your whole project, This library is a wrapper on your endpoints
 and convert your object into Result object for both success and error scenarios.**
 
@@ -53,7 +53,7 @@ public void Configure(IApplicationBuilder app)
 
 ## Configuration
 
-  There are two ways to register exceptions in EasyResult:
+  There are two ways to register exceptions in EasyResult:  
     1. Use IExceptionResult interface (this way can only be used for your customize exceptions).<br/>
         You have to inherit your customize exception from this generic interface and implement its method and assign your desireable HttpStatusCode
   ```
@@ -77,8 +77,8 @@ public void Configure(IApplicationBuilder app)
   }
   ```
   
-    2. Use ExceptionService<br/>
-        In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
+   2. Use ExceptionService  
+       In order to use this way, you have to write a middleware as code below (You have to use this way if you want to register built-in exceptions):
   
   ```
   public static void AddExceptions(this IApplicationBuilder app)
