@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace EasyResult;
 
@@ -98,7 +100,11 @@ public class ActionResultFilterAttribute : ActionFilterAttribute
         {
             if (IsResultType(objectResult.Value) == false)
             {
-                value = new Result().WithError(JsonSerializer.Serialize(objectResult.Value));
+                value = new Result().WithError(JsonSerializer.Serialize(objectResult.Value,new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true
+                }));
             }
             else
             {
