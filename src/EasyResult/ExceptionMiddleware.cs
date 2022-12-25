@@ -31,13 +31,16 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            context.Response.StatusCode = (int)_exceptionService.GetHttpStatusCodeByException(ex);
-
+            var statusCode = (int)_exceptionService.GetHttpStatusCodeByException(ex);
+            context.Response.StatusCode = statusCode;
             await context.Response.WriteAsJsonAsync(ex.ToResult(),_jsonOptions.JsonSerializerOptions);
 
-            _logger.LogError("::::::::::::::::::: Exception :::::::::::::::::::");
-            _logger.LogError($"Message ::::::::::::::::::: {ex.Message} :::::::::::::::::::");
-            _logger.LogError($"Inner Exception ::::::::::::::::::: {ex.GetException()} :::::::::::::::::::");
+            if(statusCode == 500)
+            {
+                _logger.LogError("::::::::::::::::::: Exception - InternalServerError - 500 :::::::::::::::::::");
+                _logger.LogError($"Message ::::::::::::::::::: {ex.Message} :::::::::::::::::::");
+                _logger.LogError($"Inner Exception ::::::::::::::::::: {ex.GetException()} :::::::::::::::::::");
+            }
         }
     }
 }
